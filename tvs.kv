@@ -1,0 +1,431 @@
+#:import dp kivy.metrics.dp
+
+<TransactionRow>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: dp(96)
+    padding: dp(10)
+    spacing: dp(2)
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(8)]
+        Color:
+            rgba: 0.88, 0.88, 0.9, 1
+        Line:
+            width: 1
+            rounded_rectangle: (self.x, self.y, self.width, self.height, dp(8))
+    BoxLayout:
+        size_hint_y: None
+        height: dp(24)
+        Label:
+            text: root.date_value + "   " + root.driver_value
+            color: 0.2, 0.2, 0.2, 1
+            font_size: '13sp'
+            halign: 'left'
+            valign: 'middle'
+            text_size: self.size
+            shorten: True
+        Label:
+            text: root.amount_value
+            color: root.amount_color
+            bold: True
+            font_size: '15sp'
+            halign: 'right'
+            valign: 'middle'
+            text_size: self.size
+            size_hint_x: 0.42
+    BoxLayout:
+        size_hint_y: None
+        height: dp(22)
+        Label:
+            text: "[" + root.type_value + "] " + root.category_value
+            font_size: '12sp'
+            color: 0.4, 0.4, 0.4, 1
+            halign: 'left'
+            valign: 'middle'
+            text_size: self.size
+    BoxLayout:
+        size_hint_y: None
+        height: dp(18)
+        Label:
+            text: root.desc_value
+            font_size: '11sp'
+            italic: True
+            color: 0.55, 0.55, 0.55, 1
+            halign: 'left'
+            valign: 'middle'
+            text_size: self.size
+            shorten: True
+    BoxLayout:
+        size_hint_y: None
+        height: dp(28)
+        spacing: dp(6)
+        Button:
+            text: 'Edit'
+            font_size: '12sp'
+            on_release: root.edit_pressed()
+        Button:
+            text: 'Delete'
+            font_size: '12sp'
+            on_release: root.delete_pressed()
+
+<TransactionsRV>:
+    viewclass: 'TransactionRow'
+    RecycleBoxLayout:
+        default_size: None, dp(96)
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'
+        spacing: dp(8)
+        padding: dp(4)
+
+<MainScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: 0.94, 0.95, 0.97, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        BoxLayout:
+            size_hint_y: None
+            height: dp(56)
+            padding: dp(14), 0
+            canvas.before:
+                Color:
+                    rgba: 0.16, 0.49, 0.91, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Label:
+                text: 'TVS Unit Tracker'
+                bold: True
+                font_size: '18sp'
+                halign: 'left'
+                valign: 'middle'
+                text_size: self.size
+            Button:
+                text: 'Filter'
+                size_hint_x: None
+                width: dp(80)
+                on_release: app.open_filter_popup()
+
+        BoxLayout:
+            size_hint_y: None
+            height: dp(84)
+            padding: dp(10)
+            spacing: dp(8)
+            BoxLayout:
+                orientation: 'vertical'
+                padding: dp(6)
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(8)]
+                Label:
+                    text: 'Income'
+                    font_size: '11sp'
+                    color: 0.4, 0.4, 0.4, 1
+                Label:
+                    id: lbl_income
+                    text: '\u20b10.00'
+                    bold: True
+                    font_size: '13sp'
+                    color: 0.13, 0.6, 0.25, 1
+            BoxLayout:
+                orientation: 'vertical'
+                padding: dp(6)
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(8)]
+                Label:
+                    text: 'Expenses'
+                    font_size: '11sp'
+                    color: 0.4, 0.4, 0.4, 1
+                Label:
+                    id: lbl_expense
+                    text: '\u20b10.00'
+                    bold: True
+                    font_size: '13sp'
+                    color: 0.75, 0.15, 0.15, 1
+            BoxLayout:
+                orientation: 'vertical'
+                padding: dp(6)
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(8)]
+                Label:
+                    text: 'Net Take-Home'
+                    font_size: '11sp'
+                    color: 0.4, 0.4, 0.4, 1
+                Label:
+                    id: lbl_balance
+                    text: '\u20b10.00'
+                    bold: True
+                    font_size: '13sp'
+
+        FloatLayout:
+            TransactionsRV:
+                id: rv
+                pos_hint: {'x': 0, 'y': 0}
+                size_hint: 1, 1
+                padding: dp(6)
+
+            Label:
+                id: empty_label
+                text: 'No records found.\nTap + to add your first entry.'
+                halign: 'center'
+                color: 0.5, 0.5, 0.5, 1
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+            Button:
+                text: '+'
+                font_size: '26sp'
+                bold: True
+                size_hint: None, None
+                size: dp(60), dp(60)
+                pos_hint: {'right': 0.97, 'y': 0.04}
+                background_normal: ''
+                background_color: 0.16, 0.49, 0.91, 1
+                on_release: app.open_add_form()
+
+        # Hidden fields holding the active filter state (not shown to the user)
+        BoxLayout:
+            size_hint_y: None
+            height: 0
+            opacity: 0
+            TextInput:
+                id: filter_driver
+                text: ''
+            TextInput:
+                id: filter_category
+                text: 'All'
+            TextInput:
+                id: filter_start
+                text: ''
+            TextInput:
+                id: filter_end
+                text: ''
+
+<FilterPopupContent>:
+    orientation: 'vertical'
+    spacing: dp(8)
+    padding: dp(10)
+    Label:
+        text: 'Driver Name'
+        size_hint_y: None
+        height: dp(20)
+        halign: 'left'
+        text_size: self.size
+    TextInput:
+        id: pf_driver
+        multiline: False
+        size_hint_y: None
+        height: dp(40)
+    Label:
+        text: 'Category'
+        size_hint_y: None
+        height: dp(20)
+        halign: 'left'
+        text_size: self.size
+    Spinner:
+        id: pf_category
+        text: 'All'
+        values: ['All', 'Boundary', 'Gas', 'Parts', 'Annual', 'Arkila', 'Special Trips']
+        size_hint_y: None
+        height: dp(40)
+    BoxLayout:
+        spacing: dp(8)
+        size_hint_y: None
+        height: dp(56)
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                text: 'Start (YYYY-MM-DD)'
+                font_size: '11sp'
+                size_hint_y: None
+                height: dp(16)
+            TextInput:
+                id: pf_start
+                multiline: False
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                text: 'End (YYYY-MM-DD)'
+                font_size: '11sp'
+                size_hint_y: None
+                height: dp(16)
+            TextInput:
+                id: pf_end
+                multiline: False
+    BoxLayout:
+        size_hint_y: None
+        height: dp(44)
+        spacing: dp(8)
+        Button:
+            id: btn_apply
+            text: 'Apply'
+        Button:
+            id: btn_reset
+            text: 'Reset'
+        Button:
+            id: btn_close
+            text: 'Close'
+
+<FormScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: 0.94, 0.95, 0.97, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        BoxLayout:
+            size_hint_y: None
+            height: dp(56)
+            padding: dp(10), 0
+            spacing: dp(10)
+            canvas.before:
+                Color:
+                    rgba: 0.16, 0.49, 0.91, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Button:
+                text: '< Back'
+                size_hint_x: None
+                width: dp(90)
+                on_release: app.cancel_form()
+            Label:
+                id: form_title
+                text: 'Add New Entry'
+                bold: True
+                font_size: '16sp'
+
+        ScrollView:
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                padding: dp(16)
+                spacing: dp(10)
+
+                Label:
+                    text: 'Date (YYYY-MM-DD)'
+                    size_hint_y: None
+                    height: dp(18)
+                    halign: 'left'
+                    text_size: self.size
+                    color: 0.3, 0.3, 0.3, 1
+                TextInput:
+                    id: f_date
+                    multiline: False
+                    size_hint_y: None
+                    height: dp(44)
+
+                Label:
+                    text: 'Driver Name'
+                    size_hint_y: None
+                    height: dp(18)
+                    halign: 'left'
+                    text_size: self.size
+                    color: 0.3, 0.3, 0.3, 1
+                TextInput:
+                    id: f_driver
+                    multiline: False
+                    size_hint_y: None
+                    height: dp(44)
+
+                Label:
+                    text: 'Entry Type'
+                    size_hint_y: None
+                    height: dp(18)
+                    halign: 'left'
+                    text_size: self.size
+                    color: 0.3, 0.3, 0.3, 1
+                Spinner:
+                    id: f_type
+                    text: 'Income'
+                    values: ['Income', 'Expense']
+                    size_hint_y: None
+                    height: dp(44)
+
+                Label:
+                    text: 'Category'
+                    size_hint_y: None
+                    height: dp(18)
+                    halign: 'left'
+                    text_size: self.size
+                    color: 0.3, 0.3, 0.3, 1
+                Spinner:
+                    id: f_category
+                    text: 'Boundary'
+                    values: ['Boundary', 'Gas', 'Parts', 'Annual', 'Arkila', 'Special Trips']
+                    size_hint_y: None
+                    height: dp(44)
+
+                Label:
+                    text: 'Amount (\u20b1)'
+                    size_hint_y: None
+                    height: dp(18)
+                    halign: 'left'
+                    text_size: self.size
+                    color: 0.3, 0.3, 0.3, 1
+                TextInput:
+                    id: f_amount
+                    multiline: False
+                    input_filter: 'float'
+                    size_hint_y: None
+                    height: dp(44)
+
+                Label:
+                    text: 'Notes'
+                    size_hint_y: None
+                    height: dp(18)
+                    halign: 'left'
+                    text_size: self.size
+                    color: 0.3, 0.3, 0.3, 1
+                TextInput:
+                    id: f_desc
+                    multiline: False
+                    size_hint_y: None
+                    height: dp(44)
+
+                Button:
+                    text: 'Save Entry'
+                    size_hint_y: None
+                    height: dp(48)
+                    background_normal: ''
+                    background_color: 0.16, 0.49, 0.91, 1
+                    color: 1, 1, 1, 1
+                    on_release: app.save_form()
+
+                Button:
+                    id: btn_delete
+                    text: 'Delete Entry'
+                    size_hint_y: None
+                    height: dp(48)
+                    background_normal: ''
+                    background_color: 0.75, 0.15, 0.15, 1
+                    color: 1, 1, 1, 1
+                    on_release: app.delete_from_form()
